@@ -1,23 +1,29 @@
 :root {
-	--background: #0a0a0a;
-	--foreground: #e6f2ff;
-	--card: #0a0a0a;
-	--card-foreground: #e6f2ff;
-	--popover: #0a0a0a;
-	--popover-foreground: #e6f2ff;
-	--primary: #0056b3;
-	--primary-foreground: #1a1a1a;
-	--secondary: #2b3d4d;
-	--secondary-foreground: #e6f2ff;
-	--muted: #2b3d4d;
-	--muted-foreground: #a3b8d1;
-	--accent: #2b3d4d;
-	--accent-foreground: #e6f2ff;
-	--destructive: #993333;
-	--destructive-foreground: #e6f2ff;
-	--border: #2b3d4d;
-	--input: #2b3d4d;
-	--ring: #0073e6;
+	--background: 255, 255, 255;
+	--foreground: 45, 45, 45;
+	--card: 255, 255, 255;
+	--card-foreground: 45, 45, 45;
+	--popover: 255, 255, 255;
+	--popover-foreground: 45, 45, 45;
+	--primary: 68, 108, 255;
+	--primary-foreground: 232, 232, 255;
+	--secondary: 232, 232, 245;
+	--secondary-foreground: 45, 45, 45;
+	--muted: 232, 232, 245;
+	--muted-foreground: 120, 120, 120;
+	--accent: 232, 232, 245;
+	--accent-foreground: 45, 45, 45;
+	--destructive: 255, 0, 0;
+	--destructive-foreground: 232, 232, 255;
+	--border: 232, 232, 245;
+	--input: 232, 232, 245;
+	--ring: 68, 108, 255;
+	--radius: 0.5rem;
+	--chart-1: 255, 85, 85;
+	--chart-2: 85, 170, 170;
+	--chart-3: 85, 85, 170;
+	--chart-4: 170, 170, 85;
+	--chart-5: 255, 170, 85;
 }
 
 * {
@@ -38,7 +44,7 @@ body {
 	src: url("/assets/fonts/GeistMonoVF.woff2") format("woff2");
 }
 
-main {
+main.landing {
 	display: flex;
 	overflow: hidden;
 
