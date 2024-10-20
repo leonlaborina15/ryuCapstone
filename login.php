@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Login successful. Welcome, " . $user['name'];
 
         if ($user['role'] == 'admin') {
-            header("Location: admin_dashboard.php");
+            header("Location: admin/admin_dashboard.php");
         } else {
-            header("Location: customer_dashboard.php");
+            header("Location: cutomer/customer_dashboard.php");
         }
 
     } else {
