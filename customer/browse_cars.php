@@ -102,6 +102,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         </table>
     </div>
 
-    <a href="book_test_drive.php">Book a Test Drive</a>
+    <a href="buy_car.php">Buy a Car now</a>
 </body>
 </html>
