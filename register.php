@@ -1,5 +1,5 @@
 <?php
-include('db_connect.php');
+include('db_connect.php'); // Include your DB connection
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -10,6 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($name) || empty($email) || empty($password) || empty($role)) {
         echo "All fields are required.";
+        exit;
+    }
+
+    if (strlen($password) < 8) {
+        echo "Password must be at least 8 characters long.";
+        exit;
+    }
+
+    if ($password[0] !== strtoupper($password[0])) {
+        echo "Password must start with an uppercase letter.";
         exit;
     }
 
