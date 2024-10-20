@@ -17,31 +17,44 @@ if (!$result) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/admin-styles/view-messages.css">
     <title>View Messages</title>
 </head>
+
 <body>
     <h1>Customer Messages</h1>
 
-    <table border="1">
-        <tr>
-            <th>Customer Name</th>
-            <th>Message</th>
-            <th>Submitted On</th>
-        </tr>
-        <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr>
-                <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
-                <td><?php echo htmlspecialchars($row['message']); ?></td>
-                <td><?php echo htmlspecialchars($row['created_at']); ?></td>
-            </tr>
-        <?php } ?>
-    </table>
+    <div class="page-action">
+        <a href="admin_dashboard.php">&larr; Dashboard</a>
+    </div>
 
-    <a href="admin_dashboard.php">Back to Admin Dashboard</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Message</th>
+                <th>Submitted On</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = $result->fetch_assoc()) {
+                $date = new DateTime($row['created_at']);
+                $formattedDate = $date->format('F j, Y, g:i a');
+            ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['message']); ?></td>
+                    <td><?php echo htmlspecialchars($formattedDate); ?></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
 
     <?php $conn->close(); ?>
 </body>
+
 </html>

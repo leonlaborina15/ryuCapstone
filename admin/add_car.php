@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $model = $_POST['model'];
     $year = $_POST['year'];
     $price = $_POST['price'];
-    $availability = isset($_POST['availability']) ? 1 : 0; 
+    $availability = isset($_POST['availability']) ? 1 : 0;
 
     $stmt = $conn->prepare("INSERT INTO cars (make, model, year, price, availability) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("ssiid", $make, $model, $year, $price, $availability);
@@ -27,24 +27,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/admin-styles/inventory.css">
     <title>Add Car</title>
 </head>
+
 <body>
-    <h1>Add New Car</h1>
-    <form method="POST" action="add_car.php">
-        <input type="text" name="make" placeholder="Make" required><br>
-        <input type="text" name="model" placeholder="Model" required><br>
-        <input type="number" name="year" placeholder="Year" required><br>
-        <input type="number" name="price" placeholder="Price" required><br>
+    <div class="breadcrumbs">
+        <a href="admin_dashboard.php">Dashboard</a> > <a href="inventory.php">Inventory</a> > <span>Add Car</span>
+    </div>
+    <h1>Add Car</h1>
+    <div class="page-action">
+        <a href="admin_dashboard.php">&larr; Dashboard</a>
+        <a href="inventory.php">Inventory</a>
+    </div>
+    <main>
+        <form action="add_car.php" method="post">
+            <div class="form-group" title="Brand of the car">
+                <label for="make">Make</label>
+                <input type="text" id="make" name="make" required>
+            </div>
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="number" id="year" name="year" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" name="price" required>
+            </div>
+            <div>
+                <label for="availability">Availability:</label>
+                <input type="checkbox" id="availability" name="availability">
+            </div>
+            <button type="submit">Add Car</button>
+        </form>
+    </main>
 
-        <label>
-            <input type="checkbox" name="availability" checked> Available
-        </label><br>
-
-        <button type="submit">Add Car</button>
-    </form>
-    <a href="inventory.php">Back to Inventory</a>
+    <?php
+    $conn->close();
+    ?>
 </body>
+
 </html>
