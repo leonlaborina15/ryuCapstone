@@ -19,19 +19,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['name'] = $user['name'];
-        $_SESSION['role'] = $user['role'];
+    if ($user) {
+        if (password_verify($password, $user['password'])) {
 
-        echo "Login successful. Welcome, " . $user['name'];
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['name'] = $user['name'];
+            $_SESSION['role'] = $user['role'];
 
-        if ($user['role'] == 'admin') {
-            header("Location: admin/admin_dashboard.php");
+            echo "Login successful. Welcome, " . htmlspecialchars($user['name']);
+
+            if ($user['role'] == 'admin') {
+                header("Location: admin/admin_dashboard.php");
+            } else {
+                header("Location: customer/customer_dashboard.php");
+            }
+            exit;
         } else {
-            header("Location: cutomer/customer_dashboard.php");
+            echo "Invalid email or password.";
         }
-
     } else {
         echo "Invalid email or password.";
     }
