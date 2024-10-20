@@ -1,0 +1,85 @@
+:root {
+	--background: #0a0a0a;
+	--foreground: #e6f2ff;
+	--card: #0a0a0a;
+	--card-foreground: #e6f2ff;
+	--popover: #0a0a0a;
+	--popover-foreground: #e6f2ff;
+	--primary: #0056b3;
+	--primary-foreground: #1a1a1a;
+	--secondary: #2b3d4d;
+	--secondary-foreground: #e6f2ff;
+	--muted: #2b3d4d;
+	--muted-foreground: #a3b8d1;
+	--accent: #2b3d4d;
+	--accent-foreground: #e6f2ff;
+	--destructive: #993333;
+	--destructive-foreground: #e6f2ff;
+	--border: #2b3d4d;
+	--input: #2b3d4d;
+	--ring: #0073e6;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "Geist", sans-serif;
+
+	background-color: var(--background);
+	color: var(--foreground);
+}
+
+@font-face {
+	font-family: "Geist";
+	src: url("/assets/fonts/GeistMonoVF.woff2") format("woff2");
+}
+
+main {
+	display: flex;
+	overflow: hidden;
+
+	.text-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		/* align-items: center; */
+		width: 60%;
+		padding: 2rem;
+
+		h1 {
+			font-size: 4rem;
+			margin-bottom: 1rem;
+		}
+
+		p {
+			font-size: 1rem;
+			margin-bottom: 1rem;
+			max-width: 60ch;
+		}
+
+		button {
+			padding: 0.5rem 1rem;
+			border: none;
+			border-radius: 0.25rem;
+			background-color: var(--primary);
+			color: var(--primary-foreground);
+			cursor: pointer;
+		}
+	}
+
+	.image-container {
+		width: 40%;
+		height: 100dvh;
+		object-fit: cover;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+}
