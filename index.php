@@ -1,1 +1,3 @@
-echo("Hiii");
+<?php
+echo "burat";
+?>
