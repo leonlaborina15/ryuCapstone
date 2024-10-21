@@ -6,9 +6,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 
 require '../db_connect.php';
 
-$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
+$user_id = $_SESSION['user_id'];  
 
-// Query to select purchases for the logged-in customer using their user_id
 $query = "
     SELECT p.id, p.purchase_date, c.make, c.model, c.year
     FROM purchases p

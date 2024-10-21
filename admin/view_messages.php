@@ -2,23 +2,19 @@
 session_start();
 require '../db_connect.php';
 
-// Ensure the user is logged in and has an admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
 
-// Retrieve admin ID from session
 $admin_id = $_SESSION['user_id'];
 
-// Check if admin exists in the 'adminactions' table
 $check_admin_query = "SELECT * FROM adminactions WHERE admin_id = ?";
 $stmt_check = $conn->prepare($check_admin_query);
 $stmt_check->bind_param("i", $admin_id);
 $stmt_check->execute();
 $result_check = $stmt_check->get_result();
 
-// Insert admin into 'adminactions' table if not found
 if ($result_check->num_rows === 0) {
     $insert_admin_query = "INSERT INTO adminactions (admin_id, action_type, action_date) VALUES (?, 'Login', NOW())";
     $stmt_insert = $conn->prepare($insert_admin_query);
@@ -27,7 +23,6 @@ if ($result_check->num_rows === 0) {
     $stmt_insert->close();
 }
 
-// Query to fetch customer messages
 $query = "SELECT id, customer_name, message, created_at FROM customer_messages ORDER BY created_at DESC";
 $result = $conn->query($query);
 
@@ -35,22 +30,18 @@ if (!$result) {
     die("Database query failed: " . $conn->error);
 }
 
-// Handle reply submission
 if (isset($_POST['reply'], $_POST['message_id'], $_POST['reply_message'])) {
     $message_id = $_POST['message_id'];
     $reply_message = $_POST['reply_message'];
 
-    // Insert admin reply into admin_replies table with admin_id
     $stmt = $conn->prepare("INSERT INTO admin_replies (message_id, admin_id, reply_message, created_at) VALUES (?, ?, ?, NOW())");
     $stmt->bind_param("iis", $message_id, $admin_id, $reply_message);
 
     if ($stmt->execute()) {
-        // Update customer_messages to indicate a reply was made
         $stmt_notify = $conn->prepare("UPDATE customer_messages SET admin_replied = 1 WHERE id = ?");
         $stmt_notify->bind_param("i", $message_id);
         $stmt_notify->execute();
 
-        // Redirect to the same page after a successful reply
         header("Location: view_messages.php?reply=success");
         exit();
     } else {
@@ -60,7 +51,6 @@ if (isset($_POST['reply'], $_POST['message_id'], $_POST['reply_message'])) {
     $stmt->close();
 }
 
-// Handle message deletion
 if (isset($_POST['delete'], $_POST['message_id'])) {
     $message_id = $_POST['message_id'];
 
@@ -68,7 +58,6 @@ if (isset($_POST['delete'], $_POST['message_id'])) {
     $stmt->bind_param("i", $message_id);
 
     if ($stmt->execute()) {
-        // Redirect to the same page after successful deletion
         header("Location: view_messages.php?delete=success");
         exit();
     } else {

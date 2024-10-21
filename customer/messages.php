@@ -2,23 +2,19 @@
 session_start();
 require '../db_connect.php';
 
-// Check if the user is logged in, otherwise redirect to the login page
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit();
 }
 
-// Check if the request method is POST and handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate form inputs
     if (!empty($_POST['customer_name']) && !empty($_POST['message'])) {
         $customer_name = $_POST['customer_name'];
         $message = $_POST['message'];
 
-        // Retrieve customer_id from the session
         $customer_id = $_SESSION['user_id'];
 
-        // Prepare and execute the SQL query
         $stmt = $conn->prepare("INSERT INTO customer_messages (customer_name, message, customer_id) VALUES (?, ?, ?)");
         if ($stmt) {
             $stmt->bind_param("ssi", $customer_name, $message, $customer_id);
