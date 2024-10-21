@@ -1,0 +1,120 @@
+:root {
+	--background: 255, 255, 255;
+	--foreground: 10, 10, 10;
+	--card: 255, 255, 255;
+	--card-foreground: 10, 10, 10;
+	--popover: 255, 255, 255;
+	--popover-foreground: 10, 10, 10;
+	--primary: 36, 123, 140;
+	--primary-foreground: 255, 255, 255;
+	--secondary: 240, 240, 240;
+	--secondary-foreground: 20, 20, 20;
+	--muted: 240, 240, 240;
+	--muted-foreground: 120, 120, 120;
+	--accent: 240, 240, 240;
+	--accent-foreground: 20, 20, 20;
+	--destructive: 255, 0, 0;
+	--destructive-foreground: 255, 255, 255;
+	--border: 230, 230, 230;
+	--input: 230, 230, 230;
+	--ring: 36, 123, 140;
+	--radius: 0.5rem;
+	--chart-1: 255, 100, 100;
+	--chart-2: 100, 200, 150;
+	--chart-3: 100, 150, 200;
+	--chart-4: 100, 255, 170;
+	--chart-5: 255, 200, 170;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	/* border-color: rgb(var(--border)); */
+}
+
+@font-face {
+	font-family: "Geist";
+	src: url("/assets/fonts/GeistVF.woff") format("woff2");
+}
+
+@font-face {
+	font-family: "Geist Mono";
+	src: url("/assets/fonts/GeistMonoVF.woff") format("woff2");
+}
+
+body {
+	font-family: "Geist", sans-serif;
+
+	background-color: var(--background);
+	color: var(--foreground);
+}
+
+main {
+	display: flex;
+	overflow: hidden;
+
+	.text-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		/* align-items: center; */
+		width: 60%;
+		padding: 2rem;
+
+		h1 {
+			font-size: 4rem;
+			margin-bottom: 1rem;
+		}
+
+		p {
+			font-size: 1rem;
+			margin-bottom: 1rem;
+			max-width: 60ch;
+		}
+
+		button {
+			padding: 0.5rem 1rem;
+			border: none;
+			border-radius: 0.25rem;
+			background-color: var(--primary);
+			color: var(--primary-foreground);
+			cursor: pointer;
+		}
+	}
+
+	.image-container {
+		width: 40%;
+		height: 100dvh;
+		object-fit: cover;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+}
+
+.page-action {
+	display: flex;
+	gap: 1rem;
+	margin: 3rem 0;
+	a {
+		display: block;
+		border: 1px solid rgba(var(--border));
+		width: fit-content;
+		padding: 0.5rem 1rem;
+		height: 100%;
+		text-decoration: none;
+		background-color: rgb(var(--primary));
+		color: rgb(var(--background));
+		border-radius: var(--radius);
+		transition: background-color 0.3s, color 0.3s;
+
+		&:hover {
+			background-color: rgb(var(--primary), 0.9);
+			color: rgb(var(--background), 0.9);
+		}
+	}
+}

@@ -1,0 +1,12 @@
+@import url("../global.css");
+@import url("../table.css");
+
+body {
+	padding: 3rem;
+}
+
+main {
+	/* display: flex; */
+	min-height: 100vh;
+	padding: 1rem;
+}
