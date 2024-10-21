@@ -10,16 +10,20 @@ require '../db_connect.php';
 if (isset($_GET['car_id'])) {
     $car_id = $_GET['car_id'];
 
-    $stmt = $conn->prepare("DELETE FROM cars WHERE id = ?");
+    $stmt = $conn->prepare("DELETE FROM cars WHERE car_id = ?");
+
     $stmt->bind_param("i", $car_id);
 
     if ($stmt->execute()) {
-        echo "Car deleted successfully!";
+        header("Location: inventory.php?status=success");
     } else {
-        echo "Error: " . $conn->error;
+        header("Location: inventory.php?status=error&message=" . urlencode($conn->error));
     }
+
     $stmt->close();
-    header("Location: inventory.php");
+    exit();
+} else {
+    header("Location: inventory.php?status=error&message=NoCarIdProvided");
     exit();
 }
 ?>
