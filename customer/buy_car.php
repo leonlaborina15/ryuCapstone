@@ -11,13 +11,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_id = $_SESSION['user_id']; 
+    $user_id = $_SESSION['user_id']; // Get the logged-in user's ID
     $car_id = $_POST['car_id'];
 
+    // Insert purchase using user_id
     $stmt = $conn->prepare("INSERT INTO purchases (user_id, car_id, purchase_date) VALUES (?, ?, NOW())");
     $stmt->bind_param("ii", $user_id, $car_id);
 
     if ($stmt->execute()) {
+        // Update car availability after successful purchase
         $update_car_stmt = $conn->prepare("UPDATE cars SET availability = 0 WHERE car_id = ?");
         $update_car_stmt->bind_param("i", $car_id);
 
@@ -38,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 }
 
+// Get available cars for purchase
 $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 1");
 ?>
 
