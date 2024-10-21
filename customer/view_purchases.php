@@ -8,9 +8,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 
 require '../db_connect.php';
 
-$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
+$user_id = $_SESSION['user_id'];
 
-// Query to select purchases for the logged-in customer using their user_id
 $query = "
     SELECT p.id, p.purchase_date, c.make, c.model, c.year
     FROM purchases p
@@ -29,15 +28,19 @@ if (!$result) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/customer-styles/global.css">
     <title>View Bought Cars</title>
 </head>
+
 <body>
     <?php renderHeader(); ?>
-    <h1>Your Bought Cars</h1>
+    <div class="page-title">
+        <h1>Your Bought Cars</h1>
+    </div>
 
     <table border="1">
         <tr>
@@ -61,4 +64,5 @@ if (!$result) {
     $conn->close();
     ?>
 </body>
+
 </html>

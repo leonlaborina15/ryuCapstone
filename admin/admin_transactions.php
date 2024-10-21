@@ -42,32 +42,34 @@ if (!$result) {
         <a href="admin_dashboard.php">&larr; Dashboard</a>
     </div>
     <main>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Customer Name</th>
-                    <th>Car</th>
-                    <th>Car Year</th>
-                    <th>Purchase Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) { ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
-                            <td><?php echo htmlspecialchars($row['make'] . ' ' . $row['model']); ?></td>
-                            <td><?php echo htmlspecialchars($row['year']); ?></td>
-                            <td><?php echo htmlspecialchars($row['purchase_date']); ?></td>
-                        </tr>
-                    <?php }
-                } else { ?>
+        <div class="table-container">
+            <table border="1">
+                <thead>
                     <tr>
-                        <td colspan="4">No purchases found.</td>
+                        <th>Customer Name</th>
+                        <th>Car</th>
+                        <th>Car Year</th>
+                        <th>Purchase Date</th>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['make'] . ' ' . $row['model']); ?></td>
+                                <td><?php echo htmlspecialchars($row['year']); ?></td>
+                                <td><?php echo htmlspecialchars($row['purchase_date']); ?></td>
+                            </tr>
+                        <?php }
+                    } else { ?>
+                        <tr>
+                            <td colspan="4">No purchases found.</td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <?php

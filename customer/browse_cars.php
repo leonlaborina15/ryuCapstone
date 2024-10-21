@@ -106,8 +106,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 <body>
     <?php renderHeader(); ?>
 
-    <h1>Available Cars</h1>
-
+    <div class="page-title">
+        <h1>Available Cars</h1>
+    </div>
     <main class="browse-cars">
         <div class="filter-container">
             <form id="searchForm" method="GET">
@@ -131,25 +132,27 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                     <input type="number" id="max_price" name="max_price" value="1000000"><br>
                 </div>
 
-                <button type="button" id="clearFilters">Clear Filters</button>
+                <button type="reset" id="clearFilters">Clear Filters</button>
             </form>
         </div>
         <div>
             <div id="carResults">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Year</th>
-                            <th>Price</th>
-                            <th>Availability</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <div id="loading">Loading...</div>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Make</th>
+                                <th>Model</th>
+                                <th>Year</th>
+                                <th>Price</th>
+                                <th>Availability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <div id="loading">Loading...</div>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

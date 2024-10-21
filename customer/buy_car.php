@@ -51,7 +51,9 @@ $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 
 
 <body>
     <?php renderHeader(); ?>
-    <h1>Buy a Car</h1>
+    <div class="page-title">
+        <h1>Buy a Car</h1>
+    </div>
 
     <form method="POST" action="buy_car.php">
         <label for="car_id">Choose a Car:</label>

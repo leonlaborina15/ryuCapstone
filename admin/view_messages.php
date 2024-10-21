@@ -2,23 +2,19 @@
 session_start();
 require '../db_connect.php';
 
-// Ensure the user is logged in and has an admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
 
-// Retrieve admin ID from session
 $admin_id = $_SESSION['user_id'];
 
-// Check if admin exists in the 'adminactions' table
 $check_admin_query = "SELECT * FROM adminactions WHERE admin_id = ?";
 $stmt_check = $conn->prepare($check_admin_query);
 $stmt_check->bind_param("i", $admin_id);
 $stmt_check->execute();
 $result_check = $stmt_check->get_result();
 
-// Insert admin into 'adminactions' table if not found
 if ($result_check->num_rows === 0) {
     $insert_admin_query = "INSERT INTO adminactions (admin_id, action_type, action_date) VALUES (?, 'Login', NOW())";
     $stmt_insert = $conn->prepare($insert_admin_query);
@@ -27,7 +23,6 @@ if ($result_check->num_rows === 0) {
     $stmt_insert->close();
 }
 
-// Query to fetch customer messages
 $query = "SELECT id, customer_name, message, created_at FROM customer_messages ORDER BY created_at DESC";
 $result = $conn->query($query);
 
@@ -35,22 +30,18 @@ if (!$result) {
     die("Database query failed: " . $conn->error);
 }
 
-// Handle reply submission
 if (isset($_POST['reply'], $_POST['message_id'], $_POST['reply_message'])) {
     $message_id = $_POST['message_id'];
     $reply_message = $_POST['reply_message'];
 
-    // Insert admin reply into admin_replies table with admin_id
     $stmt = $conn->prepare("INSERT INTO admin_replies (message_id, admin_id, reply_message, created_at) VALUES (?, ?, ?, NOW())");
     $stmt->bind_param("iis", $message_id, $admin_id, $reply_message);
 
     if ($stmt->execute()) {
-        // Update customer_messages to indicate a reply was made
         $stmt_notify = $conn->prepare("UPDATE customer_messages SET admin_replied = 1 WHERE id = ?");
         $stmt_notify->bind_param("i", $message_id);
         $stmt_notify->execute();
 
-        // Redirect to the same page after a successful reply
         header("Location: view_messages.php?reply=success");
         exit();
     } else {
@@ -60,7 +51,6 @@ if (isset($_POST['reply'], $_POST['message_id'], $_POST['reply_message'])) {
     $stmt->close();
 }
 
-// Handle message deletion
 if (isset($_POST['delete'], $_POST['message_id'])) {
     $message_id = $_POST['message_id'];
 
@@ -68,7 +58,6 @@ if (isset($_POST['delete'], $_POST['message_id'])) {
     $stmt->bind_param("i", $message_id);
 
     if ($stmt->execute()) {
-        // Redirect to the same page after successful deletion
         header("Location: view_messages.php?delete=success");
         exit();
     } else {
@@ -111,60 +100,62 @@ if (isset($_POST['delete'], $_POST['message_id'])) {
     ?>
 
     <!-- <table class="table table-bordered"> -->
-    <table>
-        <thead>
-            <tr>
-                <th>Customer Name</th>
-                <th>Message</th>
-                <th>Submitted On</th>
-                <th>Reply</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $result->fetch_assoc()) {
-                $date = new DateTime($row['created_at']);
-                $formattedDate = $date->format('F j, Y, g:i a');
-            ?>
+    <div class="table-container">
+        <table>
+            <thead>
                 <tr>
-                    <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['message']); ?></td>
-                    <td><?php echo htmlspecialchars($formattedDate); ?></td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#responseModal<?php echo $row['id']; ?>">
-                            Respond
-                        </button>
+                    <th>Customer Name</th>
+                    <th>Message</th>
+                    <th>Submitted On</th>
+                    <th>Reply</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $result->fetch_assoc()) {
+                    $date = new DateTime($row['created_at']);
+                    $formattedDate = $date->format('F j, Y, g:i a');
+                ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
+                        <td><?php echo htmlspecialchars($row['message']); ?></td>
+                        <td><?php echo htmlspecialchars($formattedDate); ?></td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#responseModal<?php echo $row['id']; ?>">
+                                Respond
+                            </button>
 
-                        <form method="post" action="" style="display:inline;">
-                            <input type="hidden" name="message_id" value="<?php echo $row['id']; ?>">
-                            <button type="submit" name="delete" class="btn btn-danger">Delete</button>
-                        </form>
+                            <form method="post" action="" style="display:inline;">
+                                <input type="hidden" name="message_id" value="<?php echo $row['id']; ?>">
+                                <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+                            </form>
 
-                        <!-- Reply Modal -->
-                        <div class="modal fade" id="responseModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="responseModalLabel<?php echo $row['id']; ?>" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="responseModalLabel<?php echo $row['id']; ?>">Reply to <?php echo htmlspecialchars($row['customer_name']); ?></h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="post" action="">
-                                            <input type="hidden" name="message_id" value="<?php echo $row['id']; ?>">
-                                            <textarea name="reply_message" class="form-control" placeholder="Enter your reply" required></textarea>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" name="reply" class="btn btn-primary">Send Reply</button>
-                                            </div>
-                                        </form>
+                            <!-- Reply Modal -->
+                            <div class="modal fade" id="responseModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="responseModalLabel<?php echo $row['id']; ?>" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="responseModalLabel<?php echo $row['id']; ?>">Reply to <?php echo htmlspecialchars($row['customer_name']); ?></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="">
+                                                <input type="hidden" name="message_id" value="<?php echo $row['id']; ?>">
+                                                <textarea name="reply_message" class="form-control" placeholder="Enter your reply" required></textarea>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" name="reply" class="btn btn-primary">Send Reply</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-            <?php } ?>
-        </tbody>
-    </table>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 
     <?php $conn->close(); ?>
 </body>
