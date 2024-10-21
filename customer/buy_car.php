@@ -5,13 +5,12 @@ require '../db_connect.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $customer_name = $_POST['customer_name'];
     $car_id = $_POST['car_id'];
-    $test_drive_date = $_POST['test_drive_date'];
 
-    $stmt = $conn->prepare("INSERT INTO test_drives (customer_name, car_id, test_drive_date) VALUES (?, ?, ?)");
-    $stmt->bind_param("sis", $customer_name, $car_id, $test_drive_date);
+    $stmt = $conn->prepare("INSERT INTO purchases (customer_name, car_id, purchase_date) VALUES (?, ?, NOW())");
+    $stmt->bind_param("si", $customer_name, $car_id);
 
     if ($stmt->execute()) {
-        echo "Test drive booked successfully!";
+        echo "Car purchased successfully!";
     } else {
         echo "Error: " . $conn->error;
     }
@@ -27,12 +26,12 @@ $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Test Drive</title>
+    <title>Buy a Car</title>
 </head>
 <body>
-    <h1>Book a Test Drive</h1>
+    <h1>Buy a Car</h1>
 
-    <form method="POST" action="book_test_drive.php">
+    <form method="POST" action="buy_car.php">
         <input type="text" name="customer_name" placeholder="Your Name" required><br>
 
         <label for="car_id">Choose a Car:</label>
@@ -44,14 +43,11 @@ $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 
             <?php } ?>
         </select><br>
 
-        <label for="test_drive_date">Choose a Date:</label>
-        <input type="date" name="test_drive_date" id="test_drive_date" required><br>
-
-        <button type="submit">Book Test Drive</button>
+        <button type="submit">Buy Car</button>
     </form>
 
-    <a href="view_booked_test_drives.php">
-        <button type="button">View Bookings</button>
+    <a href="view_purchases.php">
+        <button type="button">View Purchases</button>
     </a>
 
     <a href="browse_cars.php">Back to Car Listings</a>

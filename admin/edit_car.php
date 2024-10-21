@@ -41,24 +41,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/admin-styles/inventory.css">
+
     <title>Edit Car</title>
 </head>
+
 <body>
+    <div class="breadcrumbs">
+        <a href="admin_dashboard.php">Dashboard</a> > <a href="inventory.php">Inventory</a> > <span>Edit Car</span>
+    </div>
     <h1>Edit Car Details</h1>
-    <form method="POST" action="edit_car.php?car_id=<?php echo $car_id; ?>">
-        <input type="text" name="make" value="<?php echo $make; ?>" placeholder="Make" required><br>
-        <input type="text" name="model" value="<?php echo $model; ?>" placeholder="Model" required><br>
-        <input type="number" name="year" value="<?php echo $year; ?>" placeholder="Year" required><br>
-        <input type="number" name="price" value="<?php echo $price; ?>" placeholder="Price" required><br>
+    <div class="page-action">
+        <a href="admin_dashboard.php">&larr; Dashboard</a>
+        <a href="inventory.php">Inventory</a>
+    </div>
+    <main>
 
-        <!-- Checkbox for availability -->
-        <label>
-            <input type="checkbox" name="availability" <?php echo $availability ? 'checked' : ''; ?>> Available
-        </label><br>
+        <form method="POST" action="edit_car.php?car_id=<?php echo $car_id; ?>">
+            <div class="form-group">
+                <label for="make">Make</label>
+                <input type="text" name="make" id="make" value="<?php echo $make; ?>" placeholder="Make" required />
+            </div>
+            <div class="form-group">
+                <input type="text" name="model" value="<?php echo $model; ?>" placeholder="Model" required /><br>
+            </div>
+            <div class="form-group">
+                <input type="number" name="year" value="<?php echo $year; ?>" placeholder="Year" required /><br>
+            </div>
+            <div class="form-group">
+                <input type="number" name="price" value="<?php echo $price; ?>" placeholder="Price" required /><br>
+            </div>
 
-        <button type="submit">Update Car</button>
-    </form>
-    <a href="inventory.php">Back to Inventory</a>
+            <!-- Checkbox for availability -->
+            <label>
+                <input type="checkbox" name="availability" <?php echo $availability ? 'checked' : ''; ?> />
+                Available
+            </label>
+            <br>
+
+            <button type="submit">Update Car</button>
+        </form>
+    </main>
 </body>
+
 </html>

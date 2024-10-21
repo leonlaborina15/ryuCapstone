@@ -46,12 +46,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<form method="POST" action="login.php">
-    <label>Email: </label>
-    <input type="email" name="email" required><br>
+<!DOCTYPE html>
+<html lang="en">
 
-    <label>Password: </label>
-    <input type="password" name="password" required><br>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/login-register.css">
+    <title>Login</title>
+</head>
 
-    <button type="submit">Login</button>
-</form>
+<body>
+    <main role="main">
+        <div class="image-container">
+            <img src="./assets/images/car3.jpg" alt="">
+        </div>
+        <div class="form-container">
+            <form method="POST" action="login.php">
+                <h1>Login</h1>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <p class="link">Don't have an account? <a href="register.php">Register here</a></p>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>

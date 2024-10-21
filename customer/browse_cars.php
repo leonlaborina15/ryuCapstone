@@ -9,18 +9,34 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     $search_max_price = isset($_GET['max_price']) ? $_GET['max_price'] : 1000000;
 
     $sql = "SELECT * FROM cars WHERE availability = 1";
+    $params = [];
+    $types = '';
 
     if (!empty($search_make)) {
-        $sql .= " AND make LIKE '%" . $conn->real_escape_string($search_make) . "%'";
+        $sql .= " AND make LIKE ?";
+        $params[] = '%' . $search_make . '%';
+        $types .= 's';
     }
     if (!empty($search_model)) {
-        $sql .= " AND model LIKE '%" . $conn->real_escape_string($search_model) . "%'";
+        $sql .= " AND model LIKE ?";
+        $params[] = '%' . $search_model . '%';
+        $types .= 's';
     }
     if (!empty($search_min_price) && !empty($search_max_price)) {
-        $sql .= " AND price BETWEEN " . (int)$search_min_price . " AND " . (int)$search_max_price;
+        $sql .= " AND price BETWEEN ? AND ?";
+        $params[] = (int)$search_min_price;
+        $params[] = (int)$search_max_price;
+        $types .= 'ii';
     }
 
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare($sql);
+
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -36,6 +52,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         echo "<tr><td colspan='5'>No cars found matching your criteria.</td></tr>";
     }
 
+    $stmt->close();
     $conn->close();
     exit;
 }
@@ -48,20 +65,33 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Cars</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
     <script>
         $(document).ready(function() {
             function searchCars() {
+                $('#loading').show();
                 $.ajax({
                     url: 'browse_cars.php',
                     method: 'GET',
                     data: $('#searchForm').serialize() + '&ajax=1',
                     success: function(response) {
                         $('#carResults tbody').html(response);
+                        $('#loading').hide();
+                    },
+                    error: function() {
+                        $('#carResults tbody').html('<tr><td colspan="5">An error occurred. Please try again later.</td></tr>');
+                        $('#loading').hide();
                     }
                 });
             }
 
             $('#make, #model, #min_price, #max_price').on('input', function() {
+                searchCars();
+            });
+
+            $('#clearFilters').on('click', function() {
+                $('#searchForm')[0].reset();
                 searchCars();
             });
 
@@ -84,10 +114,14 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
         <label for="max_price">Max Price:</label>
         <input type="number" id="max_price" name="max_price" value="1000000"><br>
+
+        <button type="button" id="clearFilters">Clear Filters</button>
     </form>
 
+    <div id="loading">Loading...</div>
+
     <div id="carResults">
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <th>Make</th>
@@ -102,6 +136,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         </table>
     </div>
 
-    <a href="book_test_drive.php">Book a Test Drive</a>
+    <a href="buy_car.php">Buy a Car now</a>
 </body>
 </html>
