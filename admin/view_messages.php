@@ -85,15 +85,17 @@ if (isset($_POST['delete'], $_POST['message_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/admin-styles/view-messages.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="../assets/admin-styles/view-messages.css">
     <title>View Messages</title>
 </head>
 
 <body>
+    <div class="breadcrumbs">
+        <a href="admin_dashboard.php">Dashboard</a> > <span>Messages</span>
+    </div>
     <h1>Customer Messages</h1>
-
     <div class="page-action">
         <a href="admin_dashboard.php">&larr; Dashboard</a>
     </div>
@@ -108,7 +110,8 @@ if (isset($_POST['delete'], $_POST['message_id'])) {
     }
     ?>
 
-    <table class="table table-bordered">
+    <!-- <table class="table table-bordered"> -->
+    <table>
         <thead>
             <tr>
                 <th>Customer Name</th>

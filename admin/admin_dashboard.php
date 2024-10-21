@@ -20,6 +20,7 @@ require '../db_connect.php';
 </head>
 
 <body>
+
     <!-- TODO add bacground design -->
     <h1>Admin Dashboard</h1>
     <main>
@@ -69,7 +70,17 @@ require '../db_connect.php';
                         View and manage messages from customers.
                     </p>
                 </a>
-                <a href="admin_transactions.php">View All Purchases</a>
+                <a href="admin_transactions.php">
+                    <div class="card-header">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                            <path d='M3 3h18v18H3V3zm3 3h12v12H6V6z' />
+                        </svg>
+                        <h4 class="title">View All Purchases</h4>
+                    </div>
+                    <p class="description">
+                        View and manage all purchase transactions.
+                    </p>
+                </a>
 
             </div>
         </div>
