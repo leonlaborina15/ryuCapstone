@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
+include 'components/header.php';
 
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     $search_make = isset($_GET['make']) ? $_GET['make'] : '';
@@ -40,7 +41,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            echo "<tr>
+            echo "<tr class='border-bottom'>
                 <td>" . htmlspecialchars($row['make']) . "</td>
                 <td>" . htmlspecialchars($row['model']) . "</td>
                 <td>" . htmlspecialchars($row['year']) . "</td>
@@ -60,12 +61,16 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Cars</title>
+    <link rel="stylesheet" href="../assets/customer-styles/global.css">
+    <link rel="stylesheet" href="../assets/table.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <title>Browse Cars</title>
 
     <script>
         $(document).ready(function() {
@@ -99,43 +104,57 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         });
     </script>
 </head>
+
 <body>
-    <h1>Available Cars</h1>
+    <?php renderHeader(); ?>
 
-    <form id="searchForm" method="GET">
-        <label for="make">Make:</label>
-        <input type="text" id="make" name="make"><br>
-
-        <label for="model">Model:</label>
-        <input type="text" id="model" name="model"><br>
-
-        <label for="min_price">Min Price:</label>
-        <input type="number" id="min_price" name="min_price" value="0"><br>
-
-        <label for="max_price">Max Price:</label>
-        <input type="number" id="max_price" name="max_price" value="1000000"><br>
-
-        <button type="button" id="clearFilters">Clear Filters</button>
-    </form>
-
-    <div id="loading">Loading...</div>
-
-    <div id="carResults">
-        <table>
-            <thead>
-                <tr>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Year</th>
-                    <th>Price</th>
-                    <th>Availability</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <div class="page-title">
+        <h1>Available Cars</h1>
     </div>
-
-    <a href="buy_car.php">Buy a Car now</a>
+    <main class="d-flex flex-column" style="margin: 1rem;">
+        <div id="carResults">
+            <div class="container-xl p-2 pb-4 h-100 w-75 shadow-sm rounded-4 border">
+                <div class="container-xl">
+                    <form class="row gx-3 gy-2 mb-4" id="searchForm" method="GET">
+                        <div class="col-sm-3">
+                            <label for="make" class="form-label">Make</label>
+                            <input type="text" class="form-control" id="make" name="make">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="model" class="form-label">Model</label>
+                            <input type="text" id="model" name="model" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="min_price" class="form-label">Min Price</label>
+                            <input type="number" id="min_price" name="min_price" value="0" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="max_price" class="form-label">Max Price</label>
+                            <input type="number" id="max_price" name="max_price" value="1000000" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="reset" id="clearFilters" class="btn btn-secondary">Clear Filters</button>
+                            <a class="btn btn-primary" href="buy_car.php">Buy a Car now</a>
+                        </div>
+                    </form>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th class="text-center">Year</th>
+                            <th>Price</th>
+                            <th class="text-center">Availability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div id="loading">Loading...</div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </body>
+
 </html>
