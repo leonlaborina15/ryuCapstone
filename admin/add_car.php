@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 require '../db_connect.php';
 
+$message = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $make = $_POST['make'];
     $model = $_POST['model'];
@@ -18,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssiid", $make, $model, $year, $price, $availability);
 
     if ($stmt->execute()) {
-        echo "Car added successfully!";
+        $message = "Car added successfully!";
     } else {
-        echo "Error: " . $conn->error;
+        $message = "Error: " . $conn->error;
     }
     $stmt->close();
 }
@@ -47,6 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <main>
         <form action="add_car.php" method="post">
+            <?php if ($message): ?>
+                <p><?php echo $message; ?></p>
+            <?php endif; ?>
             <div class="form-group" title="Brand of the car">
                 <label for="make">Make</label>
                 <input type="text" id="make" name="make" required>
@@ -63,9 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="price">Price</label>
                 <input type="number" id="price" name="price" required>
             </div>
-            <div>
-                <label for="availability">Availability:</label>
-                <input type="checkbox" id="availability" name="availability">
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <label for="availability">
+                    <input type="checkbox" id="availability" name="availability">
+                    Availability
+                </label>
             </div>
             <button type="submit">Add Car</button>
         </form>
