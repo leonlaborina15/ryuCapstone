@@ -9,28 +9,43 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 
 $user_id = $_SESSION['user_id'];
 
-$query = "SELECT cm.message, cm.created_at AS message_date, cr.reply_message, cr.created_at AS reply_date
+// Query to fetch customer messages, customer replies, and admin replies
+$query = "SELECT cm.message, cm.created_at AS message_date,
+                 cr.reply_message AS customer_reply, cr.created_at AS customer_reply_date,
+                 ar.reply_message AS admin_reply, ar.created_at AS admin_reply_date
           FROM customer_messages cm
           LEFT JOIN customer_replies cr ON cm.id = cr.message_id
-          WHERE cm.customer_id = ? AND cr.reply_message IS NOT NULL
+          LEFT JOIN admin_replies ar ON cm.id = ar.message_id
+          WHERE cm.customer_id = ?
           ORDER BY cm.created_at DESC";
+
 $stmt = $conn->prepare($query);
+
+if ($stmt === false) {
+    die('Error preparing the SQL query: ' . $conn->error);
+}
+
 $stmt->bind_param("i", $user_id);
-$stmt->execute();
+
+if (!$stmt->execute()) {
+    die('Error executing the SQL query: ' . $stmt->error);
+}
+
 $result = $stmt->get_result();
 
+if (!$result) {
+    die('Error fetching the results: ' . $stmt->error);
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/customer-styles/view-replies.css">
     <title>View Replies</title>
 </head>
-
 <body>
     <h1>Your Messages and Admin Replies</h1>
 
@@ -43,8 +58,10 @@ $result = $stmt->get_result();
             <tr>
                 <th>Your Message</th>
                 <th>Submitted On</th>
-                <th>Admin Reply</th>
+                <th>Your Reply</th>
                 <th>Reply Date</th>
+                <th>Admin Reply</th>
+                <th>Admin Reply Date</th>
             </tr>
         </thead>
         <tbody>
@@ -53,19 +70,22 @@ $result = $stmt->get_result();
                     $messageDate = new DateTime($row['message_date']);
                     $formattedMessageDate = $messageDate->format('F j, Y, g:i a');
 
-                    $replyDate = new DateTime($row['reply_date']);
-                    $formattedReplyDate = $replyDate->format('F j, Y, g:i a');
+                    $customerReplyDate = isset($row['customer_reply_date']) ? (new DateTime($row['customer_reply_date']))->format('F j, Y, g:i a') : "N/A";
+
+                    $adminReplyDate = isset($row['admin_reply_date']) ? (new DateTime($row['admin_reply_date']))->format('F j, Y, g:i a') : "N/A";
             ?>
                 <tr>
                     <td><?php echo htmlspecialchars($row['message']); ?></td>
                     <td><?php echo htmlspecialchars($formattedMessageDate); ?></td>
-                    <td><?php echo htmlspecialchars($row['reply_message']); ?></td>
-                    <td><?php echo htmlspecialchars($formattedReplyDate); ?></td>
+                    <td><?php echo htmlspecialchars($row['customer_reply'] ?? 'No reply yet'); ?></td>
+                    <td><?php echo htmlspecialchars($customerReplyDate); ?></td>
+                    <td><?php echo htmlspecialchars($row['admin_reply'] ?? 'No reply yet'); ?></td>
+                    <td><?php echo htmlspecialchars($adminReplyDate); ?></td>
                 </tr>
             <?php }
             } else { ?>
                 <tr>
-                    <td colspan="4">No messages with replies found.</td>
+                    <td colspan="6">No messages with replies found.</td>
                 </tr>
             <?php } ?>
         </tbody>
@@ -76,5 +96,4 @@ $result = $stmt->get_result();
     $conn->close();
     ?>
 </body>
-
 </html>

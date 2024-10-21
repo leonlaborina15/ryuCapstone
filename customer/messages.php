@@ -6,8 +6,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $customer_name = $_POST['customer_name'];
     $message = $_POST['message'];
 
-    $stmt = $conn->prepare("INSERT INTO customer_messages (customer_name, message) VALUES (?, ?)");
-    $stmt->bind_param("ss", $customer_name, $message);
+    // Assuming customer_id is stored in the session after login
+    $customer_id = $_SESSION['user_id'];
+
+    $stmt = $conn->prepare("INSERT INTO customer_messages (customer_name, message, customer_id) VALUES (?, ?, ?)");
+    $stmt->bind_param("ssi", $customer_name, $message, $customer_id);
 
     if ($stmt->execute()) {
         echo "Message sent successfully!";
@@ -31,12 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" action="messages.php">
         <input type="text" name="customer_name" placeholder="Your Name" required><br>
         <textarea name="message" placeholder="Your Message" required></textarea><br>
-
         <button type="submit">Send Message</button>
     </form>
-
     <a href="browse_cars.php">Back to Car Listings</a>
-
-    <?php $conn->close(); ?>
 </body>
 </html>

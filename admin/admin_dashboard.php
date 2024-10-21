@@ -69,6 +69,8 @@ require '../db_connect.php';
                         View and manage messages from customers.
                     </p>
                 </a>
+                <a href="admin_transactions.php">View All Purchases</a>
+
             </div>
         </div>
     </main>

@@ -1,19 +1,24 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../login.php");
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
 
 require '../db_connect.php';
 
+$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
+
+// Query to select purchases for the logged-in customer using their user_id
 $query = "
-    SELECT p.id, p.purchase_date, p.customer_name, p.car_id, c.make, c.model, c.year
+    SELECT p.id, p.purchase_date, c.make, c.model, c.year
     FROM purchases p
     JOIN cars c ON p.car_id = c.car_id
+    WHERE p.user_id = ?
 ";
-$result = $conn->query($query);
-
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if (!$result) {
     die("Database query failed: " . $conn->error);
@@ -28,18 +33,16 @@ if (!$result) {
     <title>View Bought Cars</title>
 </head>
 <body>
-    <h1>Bought Cars</h1>
+    <h1>Your Bought Cars</h1>
 
     <table border="1">
         <tr>
-            <th>Customer Name</th>
             <th>Car</th>
             <th>Purchase Date</th>
             <th>Car Year</th>
         </tr>
         <?php while ($row = $result->fetch_assoc()) { ?>
             <tr>
-                <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
                 <td><?php echo htmlspecialchars($row['make'] . ' ' . $row['model']); ?></td>
                 <td><?php echo htmlspecialchars($row['purchase_date']); ?></td>
                 <td><?php echo htmlspecialchars($row['year']); ?></td>
@@ -49,6 +52,9 @@ if (!$result) {
 
     <a href="browse_cars.php">Back to Browsing</a>
 
-    <?php $conn->close(); ?>
+    <?php
+    $stmt->close();
+    $conn->close();
+    ?>
 </body>
 </html>

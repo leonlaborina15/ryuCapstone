@@ -2,11 +2,32 @@
 session_start();
 require '../db_connect.php';
 
+// Ensure the user is logged in and has an admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
 
+// Retrieve admin ID from session
+$admin_id = $_SESSION['user_id'];
+
+// Check if admin exists in the 'adminactions' table
+$check_admin_query = "SELECT * FROM adminactions WHERE admin_id = ?";
+$stmt_check = $conn->prepare($check_admin_query);
+$stmt_check->bind_param("i", $admin_id);
+$stmt_check->execute();
+$result_check = $stmt_check->get_result();
+
+// Insert admin into 'adminactions' table if not found
+if ($result_check->num_rows === 0) {
+    $insert_admin_query = "INSERT INTO adminactions (admin_id, action_type, action_date) VALUES (?, 'Login', NOW())";
+    $stmt_insert = $conn->prepare($insert_admin_query);
+    $stmt_insert->bind_param("i", $admin_id);
+    $stmt_insert->execute();
+    $stmt_insert->close();
+}
+
+// Query to fetch customer messages
 $query = "SELECT id, customer_name, message, created_at FROM customer_messages ORDER BY created_at DESC";
 $result = $conn->query($query);
 
@@ -14,19 +35,24 @@ if (!$result) {
     die("Database query failed: " . $conn->error);
 }
 
-if (isset($_POST['reply']) && isset($_POST['message_id']) && isset($_POST['reply_message'])) {
+// Handle reply submission
+if (isset($_POST['reply'], $_POST['message_id'], $_POST['reply_message'])) {
     $message_id = $_POST['message_id'];
     $reply_message = $_POST['reply_message'];
 
-    $stmt = $conn->prepare("INSERT INTO customer_replies (message_id, reply_message, created_at) VALUES (?, ?, NOW())");
-    $stmt->bind_param("is", $message_id, $reply_message);
+    // Insert admin reply into admin_replies table with admin_id
+    $stmt = $conn->prepare("INSERT INTO admin_replies (message_id, admin_id, reply_message, created_at) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("iis", $message_id, $admin_id, $reply_message);
 
     if ($stmt->execute()) {
+        // Update customer_messages to indicate a reply was made
         $stmt_notify = $conn->prepare("UPDATE customer_messages SET admin_replied = 1 WHERE id = ?");
         $stmt_notify->bind_param("i", $message_id);
         $stmt_notify->execute();
 
-        echo "<script>alert('Reply sent successfully. The customer will be notified.'); window.location.href = window.location.href;</script>";
+        // Redirect to the same page after a successful reply
+        header("Location: view_messages.php?reply=success");
+        exit();
     } else {
         echo "<script>alert('Failed to send reply.');</script>";
     }
@@ -34,14 +60,17 @@ if (isset($_POST['reply']) && isset($_POST['message_id']) && isset($_POST['reply
     $stmt->close();
 }
 
-if (isset($_POST['delete']) && isset($_POST['message_id'])) {
+// Handle message deletion
+if (isset($_POST['delete'], $_POST['message_id'])) {
     $message_id = $_POST['message_id'];
 
     $stmt = $conn->prepare("DELETE FROM customer_messages WHERE id = ?");
     $stmt->bind_param("i", $message_id);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Message deleted successfully.'); window.location.href = window.location.href;</script>";
+        // Redirect to the same page after successful deletion
+        header("Location: view_messages.php?delete=success");
+        exit();
     } else {
         echo "<script>alert('Failed to delete the message.');</script>";
     }
@@ -69,7 +98,17 @@ if (isset($_POST['delete']) && isset($_POST['message_id'])) {
         <a href="admin_dashboard.php">&larr; Dashboard</a>
     </div>
 
-    <table border="1">
+    <?php
+    if (isset($_GET['reply']) && $_GET['reply'] == 'success') {
+        echo "<script>alert('Reply sent successfully. The customer will be notified.');</script>";
+    }
+
+    if (isset($_GET['delete']) && $_GET['delete'] == 'success') {
+        echo "<script>alert('Message deleted successfully.');</script>";
+    }
+    ?>
+
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Customer Name</th>
@@ -89,7 +128,7 @@ if (isset($_POST['delete']) && isset($_POST['message_id'])) {
                     <td><?php echo htmlspecialchars($formattedDate); ?></td>
                     <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#responseModal<?php echo $row['id']; ?>">
-                            Response
+                            Respond
                         </button>
 
                         <form method="post" action="" style="display:inline;">
@@ -97,6 +136,7 @@ if (isset($_POST['delete']) && isset($_POST['message_id'])) {
                             <button type="submit" name="delete" class="btn btn-danger">Delete</button>
                         </form>
 
+                        <!-- Reply Modal -->
                         <div class="modal fade" id="responseModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="responseModalLabel<?php echo $row['id']; ?>" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
