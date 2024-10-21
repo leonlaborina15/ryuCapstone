@@ -17,7 +17,6 @@ echo "Hello World!";
 <body>
   <!-- <?php echo '<p>Hello World</p>'; ?> -->
 
-  <!-- let's do header later, let's layout main content first -->
   <main>
     <div class="text-container">
       <h1>Online Car Dealer System</h1>

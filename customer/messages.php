@@ -8,70 +8,38 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-<<<<<<< HEAD
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
-    exit();
-}
+// Initialize messages
+$message = '';
+$error_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate form inputs
     if (!empty($_POST['customer_name']) && !empty($_POST['message'])) {
         $customer_name = $_POST['customer_name'];
-        $message = $_POST['message'];
+        $message_content = $_POST['message']; // Changed variable name to avoid conflict
 
         $customer_id = $_SESSION['user_id'];
 
         $stmt = $conn->prepare("INSERT INTO customer_messages (customer_name, message, customer_id) VALUES (?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("ssi", $customer_name, $message, $customer_id);
+            $stmt->bind_param("ssi", $customer_name, $message_content, $customer_id);
 
             // Execute the query and check for errors
             if ($stmt->execute()) {
-                echo "Message sent successfully!";
+                $message = "Message sent successfully!";
             } else {
-                echo "Error: " . $stmt->error;
+                $error_message = "Error: " . $stmt->error;
             }
 
             $stmt->close();
         } else {
-            echo "Error preparing statement: " . $conn->error;
+            $error_message = "Error preparing statement: " . $conn->error;
         }
     } else {
-        echo "Please fill in all fields.";
+        $error_message = "Please fill in all fields.";
     }
 }
 
-=======
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate form inputs
-    if (!empty($_POST['customer_name']) && !empty($_POST['message'])) {
-        $customer_name = $_POST['customer_name'];
-        $message = $_POST['message'];
-
-        $customer_id = $_SESSION['user_id'];
-
-        $stmt = $conn->prepare("INSERT INTO customer_messages (customer_name, message, customer_id) VALUES (?, ?, ?)");
-        if ($stmt) {
-            $stmt->bind_param("ssi", $customer_name, $message, $customer_id);
-
-            // Execute the query and check for errors
-            if ($stmt->execute()) {
-                echo "Message sent successfully!";
-            } else {
-                echo "Error: " . $stmt->error;
-            }
-
-            $stmt->close();
-        } else {
-            echo "Error preparing statement: " . $conn->error;
-        }
-    } else {
-        echo "Please fill in all fields.";
-    }
-}
-
->>>>>>> origin/ced
 $conn->close();
 ?>
 
@@ -83,8 +51,6 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <link rel="stylesheet" href="../assets/customer-styles/global.css">
-    <link rel="stylesheet" href="../assets/global.css"> -->
     <title>Contact Us</title>
 </head>
 
@@ -98,6 +64,17 @@ $conn->close();
                         <h4 class="card-title">Send Us a Message</h4>
                     </div>
                     <div class="card-body">
+                        <!-- Success and Error Alerts -->
+                        <?php if (!empty($message)): ?>
+                            <div class="alert alert-success" role="alert">
+                                <?php echo $message; ?>
+                            </div>
+                        <?php elseif (!empty($error_message)): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?php echo $error_message; ?>
+                            </div>
+                        <?php endif; ?>
+
                         <form method="POST" action="messages.php">
                             <div class="mb-3">
                                 <label for="customer_name" class="form-label">Your Name</label>

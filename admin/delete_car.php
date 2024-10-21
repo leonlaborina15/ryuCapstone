@@ -10,7 +10,6 @@ require '../db_connect.php';
 if (isset($_GET['car_id'])) {
     $car_id = $_GET['car_id'];
 
-    // Delete the car
     $stmt = $conn->prepare("DELETE FROM cars WHERE car_id = ?");
     $stmt->bind_param("i", $car_id);
 

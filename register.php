@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? '';  // Add this check to prevent undefined key warnings
+    $role = $_POST['role'] ?? ''; 
 
     if (empty($name) || empty($email) || empty($password) || empty($role)) {
         $error_message = "All fields are required.";

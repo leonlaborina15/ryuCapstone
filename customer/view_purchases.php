@@ -8,11 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 
 require '../db_connect.php';
 
-<<<<<<< HEAD
-$user_id = $_SESSION['user_id'];  
-=======
 $user_id = $_SESSION['user_id'];
->>>>>>> origin/ced
 
 $query = "
     SELECT p.id, p.purchase_date, c.make, c.model, c.year
