@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
+include 'components/header.php';
 
 // Check if the user is logged in and is a customer
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
@@ -25,11 +26,12 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/customer-styles/dashboard.css">
+    <link rel="stylesheet" href="../assets/customer-styles/global.css">
     <title>Customer Dashboard</title>
 </head>
 
 <body>
+    <?php renderHeader($customer_name); ?>
     <div class="dashboard-container">
         <h1>Welcome, <?php echo htmlspecialchars($customer_name); ?>!</h1>
 

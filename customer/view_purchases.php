@@ -1,5 +1,7 @@
 <?php
 session_start();
+include 'components/header.php';
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
@@ -30,9 +32,11 @@ if (!$result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/customer-styles/global.css">
     <title>View Bought Cars</title>
 </head>
 <body>
+    <?php renderHeader(); ?>
     <h1>Your Bought Cars</h1>
 
     <table border="1">

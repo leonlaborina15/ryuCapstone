@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
+include 'components/header.php';
 
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     $search_make = isset($_GET['make']) ? $_GET['make'] : '';
@@ -60,12 +61,14 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/customer-styles/global.css">
+    <link rel="stylesheet" href="../assets/table.css">
     <title>Browse Cars</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
     <script>
         $(document).ready(function() {
@@ -99,43 +102,60 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         });
     </script>
 </head>
+
 <body>
+    <?php renderHeader(); ?>
+
     <h1>Available Cars</h1>
 
-    <form id="searchForm" method="GET">
-        <label for="make">Make:</label>
-        <input type="text" id="make" name="make"><br>
+    <main class="browse-cars">
+        <div class="filter-container">
+            <form id="searchForm" method="GET">
+                <div class="form-group">
+                    <label for="make">Make:</label>
+                    <input type="text" id="make" name="make"><br>
+                </div>
 
-        <label for="model">Model:</label>
-        <input type="text" id="model" name="model"><br>
+                <div class="form-group">
+                    <label for="model">Model:</label>
+                    <input type="text" id="model" name="model"><br>
+                </div>
 
-        <label for="min_price">Min Price:</label>
-        <input type="number" id="min_price" name="min_price" value="0"><br>
+                <div class="form-group">
+                    <label for="min_price">Min Price:</label>
+                    <input type="number" id="min_price" name="min_price" value="0"><br>
+                </div>
 
-        <label for="max_price">Max Price:</label>
-        <input type="number" id="max_price" name="max_price" value="1000000"><br>
+                <div class="form-group">
+                    <label for="max_price">Max Price:</label>
+                    <input type="number" id="max_price" name="max_price" value="1000000"><br>
+                </div>
 
-        <button type="button" id="clearFilters">Clear Filters</button>
-    </form>
+                <button type="button" id="clearFilters">Clear Filters</button>
+            </form>
+        </div>
+        <div>
+            <div id="carResults">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Year</th>
+                            <th>Price</th>
+                            <th>Availability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div id="loading">Loading...</div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <div id="loading">Loading...</div>
-
-    <div id="carResults">
-        <table>
-            <thead>
-                <tr>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Year</th>
-                    <th>Price</th>
-                    <th>Availability</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+    </main>
 
     <a href="buy_car.php">Buy a Car now</a>
 </body>
+
 </html>

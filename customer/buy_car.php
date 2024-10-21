@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
+include 'components/header.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
     exit();
@@ -39,12 +40,17 @@ $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/customer-styles/global.css">
+
     <title>Buy a Car</title>
 </head>
+
 <body>
+    <?php renderHeader(); ?>
     <h1>Buy a Car</h1>
 
     <form method="POST" action="buy_car.php">
@@ -68,4 +74,5 @@ $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 
 
     <?php $conn->close(); ?>
 </body>
+
 </html>

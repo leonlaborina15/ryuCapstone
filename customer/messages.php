@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
+include 'components/header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $customer_name = $_POST['customer_name'];
@@ -27,9 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/customer-styles/global.css">
     <title>Contact Us</title>
 </head>
 <body>
+    <?php renderHeader(); ?>
     <h1>Send Us a Message</h1>
     <form method="POST" action="messages.php">
         <input type="text" name="customer_name" placeholder="Your Name" required><br>
