@@ -45,26 +45,39 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/customer-styles/global.css">
-    <link rel="stylesheet" href="../assets/global.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <link rel="stylesheet" href="../assets/customer-styles/global.css">
+    <link rel="stylesheet" href="../assets/global.css"> -->
     <title>Contact Us</title>
 </head>
 
 <body>
     <?php renderHeader(); ?>
-    <div class="page-title">
-        <h1>Send Us a Message</h1>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h4 class="card-title">Send Us a Message</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="messages.php">
+                            <div class="mb-3">
+                                <label for="customer_name" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Your Name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Your Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="4" placeholder="Your Message" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="page-actions">
-        <a href="browse_cars.php">Car Listings</a>
-    </div>
-    <main>
-        <form method="POST" action="messages.php">
-            <input type="text" name="customer_name" placeholder="Your Name" required><br>
-            <textarea name="message" placeholder="Your Message" required></textarea><br>
-            <button type="submit">Send Message</button>
-        </form>
-    </main>
 </body>
 
 </html>

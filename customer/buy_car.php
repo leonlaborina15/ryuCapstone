@@ -3,6 +3,9 @@ session_start();
 require '../db_connect.php';
 include 'components/header.php';
 
+$modalMessage = '';
+$modalType = '';
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
@@ -21,14 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update_car_stmt->bind_param("i", $car_id);
 
         if ($update_car_stmt->execute()) {
-            echo "Car purchased successfully, and availability updated!";
+            $modalMessage = "Car purchased successfully, and availability updated!";
+            $modalType = 'success';
         } else {
-            echo "Error updating car availability: " . $conn->error;
+            $modalMessage = "Error updating car availability: " . $conn->error;
+            $modalType = 'error';
         }
 
         $update_car_stmt->close();
     } else {
-        echo "Error purchasing car: " . $conn->error;
+        $modalMessage = "Error purchasing car: " . $conn->error;
+        $modalType = 'error';
     }
 
     $stmt->close();
@@ -44,36 +50,63 @@ $cars = $conn->query("SELECT car_id, make, model FROM cars WHERE availability = 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/customer-styles/global.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Buy a Car</title>
 </head>
 
 <body>
     <?php renderHeader(); ?>
-    <div class="page-title">
-        <h1>Buy a Car</h1>
+    <main class="d-flex flex-column align-items-center justify-content-center mt-5">
+        <form class="card shadow-sm w-50" method="POST" action="buy_car.php">
+            <div class="card-header">
+                <h4 class="card-title">Buy a Car</h4>
+            </div>
+            <div class="card-body mb-3">
+                <label for="car_id" class="form-label">Choose a Car:</label>
+                <select class="form-select" name="car_id" id="car_id" required>
+                    <option value="" selected disabled>Select a car to purchase</option>
+                    <?php while ($car = $cars->fetch_assoc()) { ?>
+                        <option value="<?php echo $car['car_id']; ?>">
+                            <?php echo htmlspecialchars($car['make'] . ' ' . $car['model']); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+                <button type="submit" class="btn btn-primary w-50 mt-3">Submit</button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="responseModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="responseModalLabel"><?php echo ucfirst($modalType); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?php echo $modalMessage; ?>
+                </div>
+                <div class="modal-footer">
+                    <a href="view_purchases.php" class="btn btn-primary">View Purchases</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <form method="POST" action="buy_car.php">
-        <label for="car_id">Choose a Car:</label>
-        <select name="car_id" id="car_id" required>
-            <?php while ($car = $cars->fetch_assoc()) { ?>
-                <option value="<?php echo $car['car_id']; ?>">
-                    <?php echo htmlspecialchars($car['make'] . ' ' . $car['model']); ?>
-                </option>
-            <?php } ?>
-        </select><br>
-
-        <button type="submit">Buy Car</button>
-    </form>
-
-    <a href="view_purchases.php">
-        <button type="button">View Purchases</button>
-    </a>
-
-    <a href="browse_cars.php">Back to Car Listings</a>
-
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        <?php if ($modalMessage) { ?>
+            $(document).ready(function() {
+                $('#responseModal').modal('show');
+            });
+        <?php } ?>
+    </script>
     <?php $conn->close(); ?>
 </body>
 

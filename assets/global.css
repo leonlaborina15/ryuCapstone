@@ -52,7 +52,6 @@ body {
 
 main {
 	display: flex;
-	overflow: hidden;
 
 	.text-container {
 		display: flex;

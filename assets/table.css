@@ -2,14 +2,15 @@
 
 .table-container {
 	/* margin: 0 auto; */
-	margin: 0 2rem;
-	width: 80%;
+	margin: 0 1rem;
+	/* width: 80%; */
 	max-height: 400px;
 	overflow-y: auto;
 	display: block;
 }
 
 table {
+	font-family: 'Geist', sans-serif;
 	width: 100%;
 }
 
