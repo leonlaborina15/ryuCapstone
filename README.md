@@ -1,1 +1,1 @@
-# ryuCapstone
+# ryu-capston
